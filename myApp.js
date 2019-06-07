@@ -10,7 +10,7 @@ function challenge7(req, res, next){
 }
 
 // --> 11)  Mount the body-parser middleware  here
-
+var bodyParser = require('body-parser');
 
 /** 1) Meet the node console. */
 console.log("Hello World");
@@ -56,21 +56,53 @@ function challenge5(challenge5, result){
 //for middleware you can use app.use for everything or app.post for post requests (same for get, delete, put, ...)
 
 /** 8) Chaining middleware. A Time server */
-
+//chained middleware functions
+app.get('/now', function challenge8(req, res, next){
+	var d = new Date();
+	req.time = d.toString();
+	next();
+}, function challenge8p2(req, res){
+		res.json({"time": req.time});
+})
 
 /** 9)  Get input from client - Route parameters */
-
+app.get('/:word/echo', challenge9);
+function challenge9(challenge9, result){
+	result.json({echo: challenge9.params.word});
+}
 
 /** 10) Get input from client - Query parameters */
 // /name?first=<firstname>&last=<lastname>
-
+//app.route('/name').get(challenge10).post(challenge12);
+app.get('/name', challenge10);
+function challenge10(challenge10, result){
+	result.json({name: challenge10.query.first + ' ' + challenge10.query.last});
+}
   
 /** 11) Get ready for POST Requests - the `body-parser` */
 // place it before all the routes !
+app.use(bodyParser.urlencoded({extended: false}));
+/*app.use('/name', function (req, res, next){
+	bodyParser.urlencoded({extended: false});
+	next();
+})*/
 
+
+/*function challenge11(req, res, next){
+	bodyParser.urlencoded({extended: false});
+	next();
+}*/
 
 /** 12) Get data form POST  */
-
+//app.use(bodyParser.json);
+/*function challenge12(req, result){
+	bodyParser.urlencoded({extended: false});
+	console.log(req.body);
+	result.json({name: req.body.first + ' ' + req.body.last});
+}*/
+app.post('/name', function (req, res){
+	res.json({name: req.body.first + ' ' + req.body.last});
+})
 
 
 // This would be part of the basic setup of an Express app
